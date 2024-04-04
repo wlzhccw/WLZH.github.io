@@ -1,1 +1,137 @@
-<p>This is a page!</p>
+要创建一个简单的论坛，你可以使用HTML、CSS和JavaScript来实现。论坛通常包括发布帖子、回复帖子和查看帖子等功能。下面是一个基本的论坛示例代码：
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>论坛</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 80%;
+            margin: 20px auto;
+        }
+        .post-form {
+            margin-bottom: 20px;
+        }
+        .post-form textarea {
+            width: 100%;
+            height: 100px;
+            margin-bottom: 10px;
+        }
+        .post-btn {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .post {
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .post h3 {
+            margin-top: 0;
+        }
+        .comment {
+            margin-left: 20px;
+            padding: 5px;
+            border-left: 2px solid #007bff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>欢迎来到论坛</h2>
+        <!-- 发帖表单 -->
+        <div class="post-form">
+            <textarea id="postContent" placeholder="请输入帖子内容"></textarea>
+            <button onclick="post()">发表帖子</button>
+        </div>
+        <!-- 帖子列表 -->
+        <div id="postList">
+            <!-- 帖子会通过 JavaScript 动态添加到此处 -->
+        </div>
+    </div>
+
+    <script>
+        // 模拟帖子数据
+        let posts = [];
+
+        // 发表帖子函数
+        function post() {
+            const content = document.getElementById('postContent').value;
+            if (content.trim() === '') {
+                alert('帖子内容不能为空');
+                return;
+            }
+            const post = {
+                id: posts.length + 1,
+                content: content,
+                comments: []
+            };
+            posts.push(post);
+            displayPosts();
+        }
+
+        // 显示帖子函数
+        function displayPosts() {
+            const postList = document.getElementById('postList');
+            postList.innerHTML = ''; // 清空帖子列表
+
+            posts.forEach(post => {
+                const postElement = document.createElement('div');
+                postElement.classList.add('post');
+                postElement.innerHTML = `
+                    <h3>帖子#${post.id}</h3>
+                    <p>${post.content}</p>
+                    <button onclick="showCommentForm(${post.id})">添加评论</button>
+                    <div id="commentForm${post.id}" style="display: none;">
+                        <textarea id="commentContent${post.id}" placeholder="请输入评论内容"></textarea>
+                        <button onclick="comment(${post.id})">发表评论</button>
+                    </div>
+                    <div id="commentList${post.id}"></div>
+                `;
+                post.comments.forEach(comment => {
+                    const commentElement = document.createElement('div');
+                    commentElement.classList.add('comment');
+                    commentElement.textContent = comment;
+                    postElement.appendChild(commentElement);
+                });
+                postList.appendChild(postElement);
+            });
+        }
+
+        // 添加评论表单显示函数
+        function showCommentForm(postId) {
+            const commentForm = document.getElementById(`commentForm${postId}`);
+            commentForm.style.display = 'block';
+        }
+
+        // 评论函数
+        function comment(postId) {
+            const content = document.getElementById(`commentContent${postId}`).value;
+            if (content.trim() === '') {
+                alert('评论内容不能为空');
+                return;
+            }
+            const post = posts.find(post => post.id === postId);
+            post.comments.push(content);
+            displayPosts();
+        }
+
+        // 初始显示帖子
+        displayPosts();
+    </script>
+</body>
+</html>
